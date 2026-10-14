@@ -13,6 +13,10 @@ exports.list = asyncHandler(async (req, res) => {
   ok(res, 'Appointments fetched successfully', items, meta);
 });
 
+exports.stats = asyncHandler(async (req, res) => {
+  ok(res, 'Appointment statistics fetched successfully', await appointmentService.stats(req.validated.query, req.user));
+});
+
 exports.get = asyncHandler(async (req, res) => {
   ok(res, 'Appointment fetched successfully', await appointmentService.getOne(req.validated.params.id, req.user));
 });

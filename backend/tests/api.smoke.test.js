@@ -82,6 +82,12 @@ test('slots query requires a date and a doctor or department', async () => {
   assert.equal((await call('GET', '/slots?date=2030-01-07', { auth })).status, 422);
 });
 
+test('stats endpoint is registered before /:id and validates its date', async () => {
+  const res = await call('GET', '/appointments/stats?date=not-a-date', { auth: token('RECEPTIONIST') });
+  assert.equal(res.status, 422);
+  assert.equal((await call('GET', '/appointments/stats')).status, 401);
+});
+
 test('unknown routes return a clean 404 and malformed JSON a 400', async () => {
   assert.equal((await call('GET', '/nope')).status, 404);
   const res = await fetch(`${base}/api/v1/auth/login`, {

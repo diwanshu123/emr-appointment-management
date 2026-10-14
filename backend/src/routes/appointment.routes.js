@@ -5,7 +5,7 @@ const authorize = require('../middlewares/authorize');
 const validate = require('../middlewares/validate');
 const { ROLES } = require('../utils/constants');
 const { idParams } = require('../validators/common');
-const { createBody, updateBody, cancelBody, listQuery } = require('../validators/appointment.validator');
+const { createBody, updateBody, cancelBody, listQuery, statsQuery } = require('../validators/appointment.validator');
 
 const { SUPER_ADMIN, RECEPTIONIST, DOCTOR } = ROLES;
 const staff = [SUPER_ADMIN, RECEPTIONIST];
@@ -14,6 +14,7 @@ router.use(authenticate);
 
 router.post('/', authorize(...staff), validate({ body: createBody }), controller.create);
 router.get('/', authorize(SUPER_ADMIN, RECEPTIONIST, DOCTOR), validate({ query: listQuery }), controller.list);
+router.get('/stats', authorize(SUPER_ADMIN, RECEPTIONIST, DOCTOR), validate({ query: statsQuery }), controller.stats);
 router.get('/:id', authorize(SUPER_ADMIN, RECEPTIONIST, DOCTOR), validate({ params: idParams }), controller.get);
 router.put('/:id', authorize(SUPER_ADMIN, RECEPTIONIST, DOCTOR), validate({ params: idParams, body: updateBody }), controller.update);
 router.delete('/:id', authorize(...staff), validate({ params: idParams, body: cancelBody }), controller.cancel);

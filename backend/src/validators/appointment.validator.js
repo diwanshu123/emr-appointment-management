@@ -52,4 +52,6 @@ const listQuery = z
     path: ['dateFrom'],
   });
 
-module.exports = { createBody, updateBody, cancelBody, listQuery, SORT_FIELDS };
+const statsQuery = z.object({ date: dateString.optional() });
+
+module.exports = { createBody, updateBody, cancelBody, listQuery, statsQuery, SORT_FIELDS };

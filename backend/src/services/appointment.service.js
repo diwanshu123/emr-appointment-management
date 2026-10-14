@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const env = require('../config/env');
 const Appointment = require('../models/Appointment');
 const Doctor = require('../models/Doctor');
@@ -194,6 +195,20 @@ async function getOne(id, actor) {
   return appt;
 }
 
+/** Dashboard counters: ONE aggregation, served by the {date, startTime} index. */
+async function stats({ date }, actor) {
+  const day = date || getClinicNow(env.CLINIC_TIMEZONE).date;
+  const match = { date: day };
+  if (actor.role === ROLES.DOCTOR) match.doctor = new mongoose.Types.ObjectId(actor.doctorId);
+
+  const rows = await Appointment.aggregate([{ $match: match }, { $group: { _id: '$status', count: { $sum: 1 } } }]);
+  const byStatus = Object.fromEntries(Object.values(STATUS).map((s) => [s, 0]));
+  rows.forEach((r) => {
+    byStatus[r._id] = r.count;
+  });
+  return { date: day, total: Object.values(byStatus).reduce((a, b) => a + b, 0), byStatus };
+}
+
 /* ------------------------------- update ------------------------------- */
 
 async function update(id, changes, actor, meta) {
@@ -276,4 +291,4 @@ async function complete(id, actor, meta) {
   return completed;
 }
 
-module.exports = { create, list, getOne, update, cancel, markArrived, complete };
+module.exports = { create, list, getOne, stats, update, cancel, markArrived, complete };
