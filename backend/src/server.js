@@ -4,10 +4,12 @@ const env = require('./config/env');
 const connectDB = require('./config/db');
 const app = require('./app');
 const logger = require('./utils/logger');
+const realtime = require('./sockets/realtime');
 
 async function start() {
   await connectDB();
   const server = http.createServer(app);
+  realtime.init(server);
 
   server.listen(env.PORT, () => logger.info(`API listening on port ${env.PORT} (${env.NODE_ENV})`));
 
