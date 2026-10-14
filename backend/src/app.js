@@ -11,6 +11,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 
 app.disable('x-powered-by');
+if (env.TRUST_PROXY > 0) app.set('trust proxy', env.TRUST_PROXY);
 app.use(helmet());
 app.use(cors({ origin: env.clientOrigins, credentials: true }));
 app.use(express.json({ limit: '100kb' }));

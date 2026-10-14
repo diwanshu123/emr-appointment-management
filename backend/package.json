@@ -9,6 +9,8 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node scripts/seed.js",
+    "create-admin": "node scripts/create-admin.js",
+    "check:concurrency": "node scripts/concurrency-check.js",
     "test": "node --test"
   },
   "dependencies": {

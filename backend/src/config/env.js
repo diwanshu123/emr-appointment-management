@@ -13,6 +13,7 @@ const schema = z.object({
   CLINIC_TIMEZONE: z.string().default('Asia/Kolkata'),
   BCRYPT_ROUNDS: z.coerce.number().int().min(10).max(14).default(12),
   COOKIE_SAMESITE: z.enum(['lax', 'strict', 'none']).default('lax'),
+  TRUST_PROXY: z.coerce.number().int().min(0).default(0), // number of reverse proxies in front of the API
 });
 
 const parsed = schema.safeParse(process.env);
